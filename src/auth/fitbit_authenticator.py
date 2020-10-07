@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from src.utils.config import get_config_json
 from .gather_keys_oauth2 import OAuth2Server
 
@@ -17,3 +19,11 @@ class FitbitAuthenticator:
 
         self.access_token = str(server.fitbit.client.session.token['access_token'])
         self.refresh_token = str(server.fitbit.client.session.token['refresh_token'])
+
+        profile = server.fitbit.user_profile_get()
+        print('You are authorized to access data for the user: {}'.format(profile['user']['fullName']))
+        for key, value in server.fitbit.client.session.token.items():
+            if key == 'access_token':
+                print('{} = {}'.format(key, value))
+            if key == 'expires_at':
+                print('{} = {}'.format(key, datetime.fromtimestamp(value)))
