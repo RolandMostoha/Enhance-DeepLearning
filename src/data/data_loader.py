@@ -1,24 +1,42 @@
+import csv
 from datetime import date
+from typing import Dict
 
-from fitbit import Fitbit
+from data.data_provider import DataProvider
+from data.model.records import HeartRecord, RecordBase
 
 
 class DataLoader:
-    def __init__(self, fitbit: Fitbit, start_date: date, end_date: date):
-        self.fitbit = fitbit
-        self.endDate = end_date
-        self.startDate = start_date
 
-    def generate_resting_heart(self) -> dict:
-        response_json = self.fitbit.time_series('activities/heart', base_date=self.startDate, end_date=self.endDate)
+    def __init__(self, data_provider: DataProvider):
+        self.data_provider = data_provider
+        self.records: Dict[date, dict] = {}
 
-        heart_list = response_json['activities-heart']
+    def generate_records(self):
+        heart_records = self.data_provider.get_heart_records()
+        for heart_record in heart_records:
+            record_date = heart_record['record_date']
 
-        heart_dict = {}
-        for heart in heart_list:
-            if 'restingHeartRate' in heart['value']:
-                record_date = heart['dateTime']
-                resting_heart_rate = heart['value']['restingHeartRate']
-                heart_dict[record_date] = resting_heart_rate
+            self.records[record_date] = {
+                'resting_heart': heart_record['resting_heart']
+            }
 
-        return heart_dict
+    def write_to_csv(self, file: str):
+        headers = create_headers()
+
+        with open(file, 'w') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(headers)
+
+            for record_date, record in self.records.items():
+                writer.writerow([record_date] + list(record.values()))
+
+
+def create_headers():
+    headers_record_base = list(RecordBase.__annotations__.keys())
+
+    header_heart = list(HeartRecord.__annotations__.keys())
+    for header in headers_record_base:
+        header_heart.remove(header)
+
+    return headers_record_base + header_heart

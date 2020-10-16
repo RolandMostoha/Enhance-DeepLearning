@@ -5,6 +5,7 @@ from .gather_keys_oauth2 import OAuth2Server
 
 
 class FitbitAuthenticator:
+
     def __init__(self, config_file: str):
         config_dict = get_config_json(config_file)
 

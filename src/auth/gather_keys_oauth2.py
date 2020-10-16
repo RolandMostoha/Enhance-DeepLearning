@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import sys
 import threading
 import traceback
@@ -11,6 +10,7 @@ from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, MissingTokenEr
 
 
 class OAuth2Server:
+
     def __init__(self, client_id, client_secret, redirect_uri='http://127.0.0.1:8080/'):
         """ Initialize the FitbitOauth2Client """
         self.success_html = """

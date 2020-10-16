@@ -1,0 +1,5 @@
+fitbit~=0.3.1
+oauthlib~=3.1.0
+CherryPy~=18.6.0
+numpy~=1.19.2
+pytest~=6.1.1
