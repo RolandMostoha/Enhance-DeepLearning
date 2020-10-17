@@ -1,6 +1,6 @@
 from fitbit import Fitbit
 
-from data.data_provider import FitbitDataProvider
+from data.fitbit_data_provider import FitbitDataProvider
 
 
 def main():

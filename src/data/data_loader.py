@@ -18,11 +18,7 @@ class DataLoader:
 
         self.__append_records(heart_records, HEART_RECORD_KEYS)
         self.__append_records(body_records, BODY_RECORD_KEYS)
-
-        for record_date, record in self.records.items():
-            for key in RECORD_KEYS:
-                if key not in record.keys():
-                    record[key] = None
+        self.__fill_empties_with_none()
 
     def __append_records(self, records: Dict[date, Any], record_keys: List[str]):
         for record_date, record in records.items():
@@ -31,6 +27,12 @@ class DataLoader:
 
             for key in record_keys:
                 self.records[record_date][key] = record[key]
+
+    def __fill_empties_with_none(self):
+        for record_date, record in self.records.items():
+            for key in RECORD_KEYS:
+                if key not in record.keys():
+                    record[key] = None
 
     def write_to_csv(self, file: str):
         headers = ['record_date'] + HEART_RECORD_KEYS + BODY_RECORD_KEYS
