@@ -1,3 +1,5 @@
+from fitbit import Fitbit
+
 from data.data_provider import FitbitDataProvider
 
 
@@ -14,7 +16,8 @@ def main():
 
     fitbit = fitbit.Fitbit(auth.client_id, auth.client_secret,
                            access_token=auth.access_token,
-                           refresh_token=auth.refresh_token)
+                           refresh_token=auth.refresh_token,
+                           system=Fitbit.METRIC)
 
     start_date = date(year=2020, month=1, day=1)
     end_date = date.today() - timedelta(days=1)
