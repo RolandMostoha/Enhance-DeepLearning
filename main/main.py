@@ -1,6 +1,7 @@
 from fitbit import Fitbit
 
-from data.fitbit_data_provider import FitbitDataProvider
+from data.plotter import data_plotter
+from data.provider.fitbit_data_provider import FitbitDataProvider
 
 
 def main():
@@ -26,6 +27,8 @@ def main():
 
     loader = DataLoader(data_provider)
     loader.generate_records()
+
+    data_plotter.plot(loader.records)
 
     loader.write_to_csv("../data/raw/health_records.csv")
 

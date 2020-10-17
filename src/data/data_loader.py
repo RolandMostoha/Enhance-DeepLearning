@@ -1,16 +1,17 @@
 import csv
+from collections import OrderedDict
 from datetime import date
 from typing import Dict, Any, List
 
-from data.data_provider import DataProvider
 from data.model.records import RECORD_KEYS, HEART_RECORD_KEYS, BODY_RECORD_KEYS
+from data.provider.data_provider import DataProvider
 
 
 class DataLoader:
 
     def __init__(self, data_provider: DataProvider):
         self.data_provider = data_provider
-        self.records: Dict[date, dict] = {}
+        self.records: OrderedDict[date, dict] = OrderedDict()
 
     def generate_records(self):
         heart_records = self.data_provider.get_heart_records()
@@ -19,6 +20,7 @@ class DataLoader:
         self.__append_records(heart_records, HEART_RECORD_KEYS)
         self.__append_records(body_records, BODY_RECORD_KEYS)
         self.__fill_empties_with_none()
+        self.__sort_by_date()
 
     def __append_records(self, records: Dict[date, Any], record_keys: List[str]):
         for record_date, record in records.items():
@@ -33,6 +35,9 @@ class DataLoader:
             for key in RECORD_KEYS:
                 if key not in record.keys():
                     record[key] = None
+
+    def __sort_by_date(self):
+        self.records = OrderedDict(sorted(self.records.items(), key=lambda x: x[0]))
 
     def write_to_csv(self, file: str):
         headers = ['record_date'] + HEART_RECORD_KEYS + BODY_RECORD_KEYS

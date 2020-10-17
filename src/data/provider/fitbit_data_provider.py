@@ -3,8 +3,8 @@ from typing import Dict, Any
 
 from fitbit import Fitbit
 
-from data.data_provider import DataProvider
 from data.model.records import HeartRecord, BodyRecord
+from data.provider.data_provider import DataProvider
 
 
 class FitbitDataProvider(DataProvider):

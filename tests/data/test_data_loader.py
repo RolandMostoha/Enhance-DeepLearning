@@ -7,8 +7,8 @@ import pytest
 from pytest_mock import MockerFixture
 
 from data.data_loader import DataLoader
-from data.data_provider import DataProvider
 from data.model.records import HeartRecord, BodyRecord
+from data.provider.data_provider import DataProvider
 
 
 class MockDataProvider(DataProvider):
