@@ -2,7 +2,7 @@ import abc
 from datetime import date
 from typing import Dict
 
-from data.model.records import HeartRecord, BodyRecord
+from data.model.records import HeartRecord, BodyRecord, SleepRecord
 
 
 class DataProvider(abc.ABC):
@@ -13,4 +13,8 @@ class DataProvider(abc.ABC):
 
     @abc.abstractmethod
     def get_body_records(self) -> Dict[date, BodyRecord]:
+        pass
+
+    @abc.abstractmethod
+    def get_sleep_records(self) -> Dict[date, SleepRecord]:
         pass

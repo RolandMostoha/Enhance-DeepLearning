@@ -3,7 +3,7 @@ from collections import OrderedDict
 from datetime import date
 from typing import Dict, Any, List
 
-from data.model.records import RECORD_KEYS, HEART_RECORD_KEYS, BODY_RECORD_KEYS
+from data.model.records import RECORD_KEYS, HEART_RECORD_KEYS, BODY_RECORD_KEYS, SLEEP_RECORD_KEYS
 from data.provider.data_provider import DataProvider
 
 
@@ -16,9 +16,11 @@ class DataLoader:
     def generate_records(self):
         heart_records = self.data_provider.get_heart_records()
         body_records = self.data_provider.get_body_records()
+        sleep_records = self.data_provider.get_sleep_records()
 
         self.__append_records(heart_records, HEART_RECORD_KEYS)
         self.__append_records(body_records, BODY_RECORD_KEYS)
+        self.__append_records(sleep_records, SLEEP_RECORD_KEYS)
         self.__fill_empties_with_none()
         self.__sort_by_date()
 
@@ -40,7 +42,7 @@ class DataLoader:
         self.records = OrderedDict(sorted(self.records.items(), key=lambda x: x[0]))
 
     def write_to_csv(self, file: str):
-        headers = ['record_date'] + HEART_RECORD_KEYS + BODY_RECORD_KEYS
+        headers = ['record_date'] + HEART_RECORD_KEYS + BODY_RECORD_KEYS + SLEEP_RECORD_KEYS
 
         with open(file, 'w') as csv_file:
             writer = csv.writer(csv_file)
