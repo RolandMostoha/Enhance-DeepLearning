@@ -51,7 +51,7 @@ def main():
     model = tf.keras.models.Sequential([
         normalizer,
         layers.Dense(units=1),
-    ], name="Linear Regression")
+    ], name="LinearRegression")
 
     model.compile(
         optimizer=tf.optimizers.Adam(learning_rate=0.1),
