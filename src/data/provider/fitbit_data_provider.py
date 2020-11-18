@@ -69,7 +69,7 @@ class FitbitDataProvider(DataProvider):
         if end_date is None:
             end_date = self.end_date
         days = (end_date - start_date).days
-        print("{} call between {} -> {}(total days={})".format(category, start_date, end_date, days))
+        print("{} api call between {} -> {}(total days={})".format(category, start_date, end_date, days))
 
 
 def append_records(records: Dict[date, Any],

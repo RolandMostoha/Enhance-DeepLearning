@@ -3,7 +3,7 @@ from collections import OrderedDict
 from datetime import date
 from typing import Dict, Any, List
 
-from data.model.records import RECORD_KEYS, HEART_RECORD_KEYS, BODY_RECORD_KEYS, SLEEP_RECORD_KEYS
+from data.model.records import KEYS_HEALTH_RECORDS, KEYS_HEART, KEYS_BODY, KEYS_SLEEP
 from data.provider.data_provider import DataProvider
 
 
@@ -18,9 +18,9 @@ class DataLoader:
         body_records = self.data_provider.get_body_records()
         sleep_records = self.data_provider.get_sleep_records()
 
-        self.__append_records(heart_records, HEART_RECORD_KEYS)
-        self.__append_records(body_records, BODY_RECORD_KEYS)
-        self.__append_records(sleep_records, SLEEP_RECORD_KEYS)
+        self.__append_records(heart_records, KEYS_HEART)
+        self.__append_records(body_records, KEYS_BODY)
+        self.__append_records(sleep_records, KEYS_SLEEP)
         self.__fill_empties_with_none()
         self.__sort_by_date()
 
@@ -34,7 +34,7 @@ class DataLoader:
 
     def __fill_empties_with_none(self):
         for record_date, record in self.records.items():
-            for key in RECORD_KEYS:
+            for key in KEYS_HEALTH_RECORDS:
                 if key not in record.keys():
                     record[key] = None
 
@@ -42,7 +42,7 @@ class DataLoader:
         self.records = OrderedDict(sorted(self.records.items(), key=lambda x: x[0]))
 
     def write_to_csv(self, file: str):
-        headers = ['record_date'] + HEART_RECORD_KEYS + BODY_RECORD_KEYS + SLEEP_RECORD_KEYS
+        headers = ['record_date'] + KEYS_HEART + KEYS_BODY + KEYS_SLEEP
 
         with open(file, 'w') as csv_file:
             writer = csv.writer(csv_file)
@@ -50,7 +50,7 @@ class DataLoader:
 
             for record_date, record in self.records.items():
                 ordered_records = []
-                for record_key in RECORD_KEYS:
+                for record_key in KEYS_HEALTH_RECORDS:
                     ordered_records.append(record[record_key])
 
                 writer.writerow([record_date] + ordered_records)
