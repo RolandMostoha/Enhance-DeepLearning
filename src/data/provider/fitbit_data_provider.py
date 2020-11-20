@@ -103,8 +103,10 @@ def sleep_efficiency_transformation(record_dict: dict) -> int:
     return to_int(record_dict['efficiency'])
 
 
-def sleep_duration_transformation(record_dict: dict) -> int:
-    return to_int(record_dict['duration'])
+def sleep_duration_transformation(record_dict: dict) -> float:
+    duration_ms = record_dict['duration']
+    hours_scaled = format(float(duration_ms / (1000 * 60 * 60)), '.2f')
+    return float(hours_scaled)
 
 
 def to_scaled_float(value: str) -> float:
