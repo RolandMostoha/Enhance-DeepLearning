@@ -22,4 +22,4 @@ KEYS_BODY = list(BodyRecord.__annotations__.keys())
 
 KEYS_SLEEP = list(SleepRecord.__annotations__.keys())
 
-KEYS_HEALTH_RECORDS = KEYS_HEART + KEYS_BODY + KEYS_SLEEP
+KEYS_ALL_HEALTH_RECORDS = KEYS_HEART + KEYS_BODY + KEYS_SLEEP

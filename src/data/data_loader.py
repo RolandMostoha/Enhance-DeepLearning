@@ -3,7 +3,7 @@ from collections import OrderedDict
 from datetime import date
 from typing import Dict, Any, List
 
-from data.model.records import KEYS_HEALTH_RECORDS, KEYS_HEART, KEYS_BODY, KEYS_SLEEP
+from data.model.records import KEYS_ALL_HEALTH_RECORDS, KEYS_HEART, KEYS_BODY, KEYS_SLEEP
 from data.provider.data_provider import DataProvider
 
 
@@ -34,7 +34,7 @@ class DataLoader:
 
     def __fill_empties_with_none(self):
         for record_date, record in self.records.items():
-            for key in KEYS_HEALTH_RECORDS:
+            for key in KEYS_ALL_HEALTH_RECORDS:
                 if key not in record.keys():
                     record[key] = None
 
@@ -50,7 +50,7 @@ class DataLoader:
 
             for record_date, record in self.records.items():
                 ordered_records = []
-                for record_key in KEYS_HEALTH_RECORDS:
+                for record_key in KEYS_ALL_HEALTH_RECORDS:
                     ordered_records.append(record[record_key])
 
                 writer.writerow([record_date] + ordered_records)

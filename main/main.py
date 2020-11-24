@@ -1,5 +1,5 @@
 def main():
-    from data.model.records import KEYS_HEALTH_RECORDS
+    from data.model.records import KEYS_ALL_HEALTH_RECORDS
     from trainer.trainer import Trainer
     from auth.fitbit_authenticator import FitbitAuthenticator
     from datetime import timedelta
@@ -39,18 +39,26 @@ def main():
     pd.set_option('display.max_columns', 15)
 
     last_record = data_frame.tail(1)
-    print('Last health record:\n', last_record)
+    print('Most recent health record:\n', last_record)
 
-    # Update the desired values for my personal goal
+    # Set the modified values for my personal goal
+    my_goal_changes = {'weight': 65}
+
+    # Merging the most recent record with the modified values
     my_goal = last_record.copy()
-    my_goal['weight'] = 65
-    print('My personal goal:\n', my_goal)
+    for key, value in my_goal_changes.items():
+        my_goal[key] = value
+    print('My goal:\n', my_goal)
 
-    my_goal_prediction = ''
+    record_keys = KEYS_ALL_HEALTH_RECORDS
 
-    keys = KEYS_HEALTH_RECORDS
+    # Skip the modified records, there is no need to predict overwritten records
+    for key in my_goal_changes.keys():
+        record_keys.remove(key)
 
-    for key in keys:
+    prediction_message = ''
+
+    for key in record_keys:
         trainer = Trainer(data_frame, key)
 
         model = trainer.train()
@@ -61,9 +69,9 @@ def main():
         prediction = model.predict(my_goal_input)
 
         feature_prediction = 'Predicted {} value for the desired goal: {}'.format(key, prediction)
-        my_goal_prediction += '\n' + feature_prediction
+        prediction_message += '\n' + feature_prediction
 
-    print(my_goal_prediction)
+    print(prediction_message)
 
 
 if __name__ == '__main__':

@@ -4,22 +4,22 @@ from typing import OrderedDict
 import matplotlib.pyplot as plt
 from tensorflow.python.keras.callbacks import History
 
-from data.model.records import KEYS_HEALTH_RECORDS
+from data.model.records import KEYS_ALL_HEALTH_RECORDS
 
 
 def plot_records(health_records: OrderedDict[date, dict]):
-    fig, axs = plt.subplots(len(KEYS_HEALTH_RECORDS))
+    fig, axs = plt.subplots(len(KEYS_ALL_HEALTH_RECORDS))
     fig.suptitle('Health Records')
 
-    for key in KEYS_HEALTH_RECORDS:
+    for key in KEYS_ALL_HEALTH_RECORDS:
         records = []
         dates = []
         for record_date, record in health_records.items():
             dates.append(record_date)
             records.append(record[key])
 
-        axs[KEYS_HEALTH_RECORDS.index(key)].plot(dates, records)
-        axs[KEYS_HEALTH_RECORDS.index(key)].set(ylabel=key)
+        axs[KEYS_ALL_HEALTH_RECORDS.index(key)].plot(dates, records)
+        axs[KEYS_ALL_HEALTH_RECORDS.index(key)].set(ylabel=key)
 
     fig.autofmt_xdate()
     plt.show()
