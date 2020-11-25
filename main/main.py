@@ -1,6 +1,6 @@
 def main():
     from data.model.records import KEYS_ALL_HEALTH_RECORDS
-    from trainer.trainer import Trainer
+    from trainer.linear_regression_trainer import LinearRegressionTrainer
     from auth.fitbit_authenticator import FitbitAuthenticator
     from datetime import timedelta
     from fitbit import Fitbit
@@ -9,6 +9,9 @@ def main():
     import fitbit as fitbit
     from datetime import date
     import pandas as pd
+    import tensorflow as tf
+    import seaborn as seaborn
+    from data.dataset_generator import DatasetGenerator
 
     from plotter import plotter
 
@@ -32,11 +35,20 @@ def main():
 
     loader.write_to_csv("../data/raw/health_records.csv")
 
+    # Initial setup
+    pd.set_option('display.max_columns', 15)
+    tf.keras.backend.clear_session()
+    tf.random.set_seed(60)
+
     data_frame = pd.read_csv("../data/raw/health_records.csv")
     data_frame = data_frame.fillna(data_frame.mean())
     data_frame = data_frame.drop(columns=['record_date'])
 
-    pd.set_option('display.max_columns', 15)
+    # Find correlations manually
+    seaborn.pairplot(data_frame[KEYS_ALL_HEALTH_RECORDS], diag_kind='kde')
+
+    # Check dataset stats
+    print(data_frame.describe().transpose())
 
     last_record = data_frame.tail(1)
     print('Most recent health record:\n', last_record)
@@ -48,18 +60,21 @@ def main():
     my_goal = last_record.copy()
     for key, value in my_goal_changes.items():
         my_goal[key] = value
-    print('My goal:\n', my_goal)
+    print('My goal merged with most recent health record:\n', my_goal)
 
     record_keys = KEYS_ALL_HEALTH_RECORDS
 
-    # Skip the modified records, there is no need to predict overwritten records
+    # Skip the modified ones, there is no need to predict overwritten records
     for key in my_goal_changes.keys():
         record_keys.remove(key)
 
-    prediction_message = ''
+    prediction_results = 'Results for my goal {}'.format(my_goal_changes)
 
     for key in record_keys:
-        trainer = Trainer(data_frame, key)
+        dataset = DatasetGenerator(data_frame, target_feature=key)
+        dataset.split(train_ratio=0.75, valid_ratio=0.15, test_ratio=0.10)
+
+        trainer = LinearRegressionTrainer(dataset, key)
 
         model = trainer.train()
 
@@ -68,10 +83,10 @@ def main():
 
         prediction = model.predict(my_goal_input)
 
-        feature_prediction = 'Predicted {} value for the desired goal: {}'.format(key, prediction)
-        prediction_message += '\n' + feature_prediction
+        feature_prediction = 'Predicted {} value for my goal: {}'.format(key, prediction)
+        prediction_results += '\n' + feature_prediction
 
-    print(prediction_message)
+    print(prediction_results)
 
 
 if __name__ == '__main__':

@@ -1,26 +1,22 @@
 import numpy as np
 import tensorflow as tf
-from pandas import DataFrame
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental import preprocessing
+from tensorflow.python.keras.callbacks import EarlyStopping
 from tensorflow.python.keras.models import Sequential
 
 from data.dataset_generator import DatasetGenerator
 from plotter import plotter
 
 
-class Trainer:
+class LinearRegressionTrainer:
 
-    def __init__(self, data_frame: DataFrame, target_feature: str):
+    def __init__(self, dataset: DatasetGenerator, target_feature: str):
         self.target_feature = target_feature
-        self.dataset = DatasetGenerator(data_frame, target_feature=target_feature)
-        self.dataset.split(train_ratio=0.75, valid_ratio=0.15, test_ratio=0.10)
+        self.dataset = dataset
 
     def train(self) -> Sequential:
         dataset = self.dataset
-
-        tf.keras.backend.clear_session()
-        tf.random.set_seed(60)
 
         normalizer = preprocessing.Normalization()
         normalizer.adapt(np.array(dataset.x_train))
@@ -32,16 +28,25 @@ class Trainer:
 
         model.compile(
             optimizer=tf.optimizers.Adam(learning_rate=0.1),
-            loss='mean_absolute_error',
-            metrics=['mean_absolute_error']
+            loss='mean_absolute_error'
         )
         model.build(dataset.x_train.shape)
+
+        callbacks = [
+            EarlyStopping(
+                monitor="val_loss",
+                min_delta=0.001,
+                patience=2,
+                verbose=1,
+            )
+        ]
 
         history = model.fit(
             dataset.x_train, dataset.y_train,
             epochs=200,
             validation_data=(dataset.x_valid, dataset.y_valid),
-            verbose=0
+            verbose=0,
+            callbacks=callbacks
         )
         plotter.plot_loss(self.target_feature, history)
 
