@@ -1,6 +1,6 @@
 def main():
     from data.model.records import KEYS_ALL_HEALTH_RECORDS
-    from trainer.linear_regression_trainer import LinearRegressionTrainer
+    from trainer.dnn_trainer import DNNTrainer
     from auth.fitbit_authenticator import FitbitAuthenticator
     from datetime import timedelta
     from fitbit import Fitbit
@@ -74,7 +74,7 @@ def main():
         dataset = DatasetGenerator(data_frame, target_feature=key)
         dataset.split(train_ratio=0.75, valid_ratio=0.15, test_ratio=0.10)
 
-        trainer = LinearRegressionTrainer(dataset, key)
+        trainer = DNNTrainer(dataset, key)
 
         model = trainer.train()
 

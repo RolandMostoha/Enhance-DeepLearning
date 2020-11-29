@@ -28,7 +28,7 @@ class DNNTrainer:
         ], name="{}_tf_model".format(self.target_feature))
 
         model.compile(
-            optimizer=tf.optimizers.Adam(learning_rate=0.2),
+            optimizer=tf.optimizers.Adam(learning_rate=0.1),
             loss='mean_absolute_error'
         )
         model.build(dataset.x_train.shape)
