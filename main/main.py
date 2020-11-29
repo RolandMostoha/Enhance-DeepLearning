@@ -31,7 +31,7 @@ def main():
     loader = DataLoader(data_provider)
     loader.generate_records()
 
-    plotter.plot_records(loader.records)
+    plotter.plot_all_records(loader.records)
 
     loader.write_to_csv("../data/raw/health_records.csv")
 
