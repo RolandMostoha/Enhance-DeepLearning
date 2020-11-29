@@ -148,8 +148,8 @@ def activity_transformation(record_dict: dict) -> int:
 
 def sleep_duration_transformation(record_dict: dict) -> float:
     duration_ms = record_dict['duration']
-    hours_scaled = format(float(duration_ms / (1000 * 60 * 60)), '.2f')
-    return float(hours_scaled)
+    minutes_scaled = format(float(duration_ms / (1000 * 60)), '.2f')
+    return float(minutes_scaled)
 
 
 def to_scaled_float(value: str) -> float:

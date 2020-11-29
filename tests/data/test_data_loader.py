@@ -43,7 +43,7 @@ class TestDataLoader:
         }
         mock = mocker.patch.object(data_provider, 'get_sleep_records')
         mock.return_value = {
-            date(year=2020, month=1, day=1): {'sleep_duration': 28800000, 'sleep_efficiency': 80}
+            date(year=2020, month=1, day=1): {'sleep_duration': 480, 'sleep_efficiency': 80}
         }
         mock = mocker.patch.object(data_provider, 'get_activity_records')
         mock.return_value = {
@@ -70,7 +70,7 @@ class TestDataLoader:
                                               'weight': 75,
                                               'fat': 15.12,
                                               'bmi': 21.12,
-                                              'sleep_duration': 28800000,
+                                              'sleep_duration': 480,
                                               'sleep_efficiency': 80,
                                               'total_calories': None,
                                               'active_calories': None,
@@ -114,7 +114,7 @@ class TestDataLoader:
                                  'highly_active_minutes']
 
             row_second = next(reader)
-            assert row_second == ['2020-01-01', '60', '75', '15.12', '21.12', '28800000', '80', '', '', '', '', '', '']
+            assert row_second == ['2020-01-01', '60', '75', '15.12', '21.12', '480', '80', '', '', '', '', '', '']
 
             row_third = next(reader)
             assert row_third == ['2020-01-02', '', '74', '14.12', '20.12', '', '', '1600', '400', '600', '10', '10',
