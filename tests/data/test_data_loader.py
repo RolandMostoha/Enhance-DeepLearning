@@ -7,7 +7,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from data.data_loader import DataLoader
-from data.model.records import HeartRecord, BodyRecord, SleepRecord
+from data.model.records import HeartRecord, BodyRecord, SleepRecord, ActivityRecord
 from data.provider.data_provider import DataProvider
 
 
@@ -20,6 +20,9 @@ class MockDataProvider(DataProvider):
         pass
 
     def get_sleep_records(self) -> Dict[date, SleepRecord]:
+        pass
+
+    def get_activity_records(self) -> Dict[date, ActivityRecord]:
         pass
 
 
@@ -42,6 +45,15 @@ class TestDataLoader:
         mock.return_value = {
             date(year=2020, month=1, day=1): {'sleep_duration': 28800000, 'sleep_efficiency': 80}
         }
+        mock = mocker.patch.object(data_provider, 'get_activity_records')
+        mock.return_value = {
+            date(year=2020, month=1, day=2): {'total_calories': 1600,
+                                              'active_calories': 400,
+                                              'sedentary_minutes': 600,
+                                              'lightly_active_minutes': 10,
+                                              'fairly_active_minutes': 10,
+                                              'highly_active_minutes': 10}
+        }
 
         self.data_loader = DataLoader(data_provider)
 
@@ -54,10 +66,30 @@ class TestDataLoader:
         self.data_loader.generate_records()
 
         assert self.data_loader.records == {
-            date(year=2020, month=1, day=1): {'resting_heart': 60, 'weight': 75, 'fat': 15.12, 'bmi': 21.12,
-                                              'sleep_duration': 28800000, 'sleep_efficiency': 80},
-            date(year=2020, month=1, day=2): {'resting_heart': None, 'weight': 74, 'fat': 14.12, 'bmi': 20.12,
-                                              'sleep_duration': None, 'sleep_efficiency': None}
+            date(year=2020, month=1, day=1): {'resting_heart': 60,
+                                              'weight': 75,
+                                              'fat': 15.12,
+                                              'bmi': 21.12,
+                                              'sleep_duration': 28800000,
+                                              'sleep_efficiency': 80,
+                                              'total_calories': None,
+                                              'active_calories': None,
+                                              'sedentary_minutes': None,
+                                              'lightly_active_minutes': None,
+                                              'fairly_active_minutes': None,
+                                              'highly_active_minutes': None},
+            date(year=2020, month=1, day=2): {'resting_heart': None,
+                                              'weight': 74,
+                                              'fat': 14.12,
+                                              'bmi': 20.12,
+                                              'sleep_duration': None,
+                                              'sleep_efficiency': None,
+                                              'total_calories': 1600,
+                                              'active_calories': 400,
+                                              'sedentary_minutes': 600,
+                                              'lightly_active_minutes': 10,
+                                              'fairly_active_minutes': 10,
+                                              'highly_active_minutes': 10}
         }
 
     def test_write_to_csv(self):
@@ -73,10 +105,17 @@ class TestDataLoader:
                                  'fat',
                                  'bmi',
                                  'sleep_duration',
-                                 'sleep_efficiency']
+                                 'sleep_efficiency',
+                                 'total_calories',
+                                 'active_calories',
+                                 'sedentary_minutes',
+                                 'lightly_active_minutes',
+                                 'fairly_active_minutes',
+                                 'highly_active_minutes']
 
             row_second = next(reader)
-            assert row_second == ['2020-01-01', '60', '75', '15.12', '21.12', '28800000', '80']
+            assert row_second == ['2020-01-01', '60', '75', '15.12', '21.12', '28800000', '80', '', '', '', '', '', '']
 
             row_third = next(reader)
-            assert row_third == ['2020-01-02', '', '74', '14.12', '20.12', '', '']
+            assert row_third == ['2020-01-02', '', '74', '14.12', '20.12', '', '', '1600', '400', '600', '10', '10',
+                                 '10']

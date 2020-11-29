@@ -3,7 +3,7 @@ from typing import Dict, Any, Callable, Optional
 
 from fitbit import Fitbit
 
-from data.model.records import HeartRecord, BodyRecord, SleepRecord
+from data.model.records import HeartRecord, BodyRecord, SleepRecord, ActivityRecord
 from data.provider.data_provider import DataProvider
 from utils.pager import pager
 
@@ -44,12 +44,9 @@ class FitbitDataProvider(DataProvider):
         return records
 
     def get_sleep_records(self) -> Dict[date, SleepRecord]:
-        items_count = self.period_days
-        max_item_per_page = 100
-
         records: Dict[date, SleepRecord] = {}
 
-        response = pager(items_count, max_item_per_page, self.pager_sleep_records)
+        response = pager(items_count=self.period_days, item_per_page=100, func=self.pager_sleep_records)
 
         append_records(records, response['sleep'], 'dateOfSleep', 'sleep_efficiency', sleep_efficiency_transformation)
         append_records(records, response['sleep'], 'dateOfSleep', 'sleep_duration', sleep_duration_transformation)
@@ -61,6 +58,48 @@ class FitbitDataProvider(DataProvider):
         end_date = self.start_date + timedelta(days=end_index)
         self.log_call('Sleep', start_date, end_date)
         response = self.fitbit.time_series('sleep', base_date=start_date, end_date=end_date)
+        return response
+
+    def get_activity_records(self) -> Dict[date, ActivityRecord]:
+        self.log_call('Calories')
+        res_cal = self.fitbit.time_series('activities/calories', base_date=self.start_date, end_date=self.end_date)
+        res_act_cal = pager(items_count=self.period_days, item_per_page=100, func=self.pager_active_calories)
+        self.log_call('Sedentary minutes')
+        res_min_sed = self.fitbit.time_series('activities/minutesSedentary', base_date=self.start_date,
+                                              end_date=self.end_date)
+        self.log_call('Lightly active minutes')
+        res_min_light = self.fitbit.time_series('activities/minutesLightlyActive', base_date=self.start_date,
+                                                end_date=self.end_date)
+        self.log_call('Fairly active minutes')
+        res_min_fair = self.fitbit.time_series('activities/minutesFairlyActive', base_date=self.start_date,
+                                               end_date=self.end_date)
+        self.log_call('Highly active minutes')
+        res_min_very = self.fitbit.time_series('activities/minutesVeryActive', base_date=self.start_date,
+                                               end_date=self.end_date)
+
+        total_calories = res_cal['activities-calories']
+        active_calories = res_act_cal['activities-activityCalories']
+        sedentary_minutes = res_min_sed['activities-minutesSedentary']
+        lightly_active_minutes = res_min_light['activities-minutesLightlyActive']
+        fairly_active_minutes = res_min_fair['activities-minutesFairlyActive']
+        highly_active_minutes = res_min_very['activities-minutesVeryActive']
+
+        records: Dict[date, ActivityRecord] = {}
+
+        append_records(records, total_calories, 'dateTime', 'total_calories', activity_transformation)
+        append_records(records, active_calories, 'dateTime', 'active_calories', activity_transformation)
+        append_records(records, sedentary_minutes, 'dateTime', 'sedentary_minutes', activity_transformation)
+        append_records(records, lightly_active_minutes, 'dateTime', 'lightly_active_minutes', activity_transformation)
+        append_records(records, fairly_active_minutes, 'dateTime', 'fairly_active_minutes', activity_transformation)
+        append_records(records, highly_active_minutes, 'dateTime', 'highly_active_minutes', activity_transformation)
+
+        return records
+
+    def pager_active_calories(self, start_index: int, end_index: int):
+        start_date = self.start_date + timedelta(days=start_index)
+        end_date = self.start_date + timedelta(days=end_index)
+        self.log_call('Active calories', start_date, end_date)
+        response = self.fitbit.time_series('activities/activityCalories', base_date=start_date, end_date=end_date)
         return response
 
     def log_call(self, category: str, start_date: date = None, end_date: date = None):
@@ -101,6 +140,10 @@ def body_value_transformation(record_dict: dict) -> float:
 
 def sleep_efficiency_transformation(record_dict: dict) -> int:
     return to_int(record_dict['efficiency'])
+
+
+def activity_transformation(record_dict: dict) -> int:
+    return to_int(record_dict['value'])
 
 
 def sleep_duration_transformation(record_dict: dict) -> float:
