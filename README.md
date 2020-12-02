@@ -16,7 +16,7 @@ record_date | weight | fat | cal_out | rest_heart | active_min | inactive_min | 
 
 Let's say we want to make a goal by reducing the **fat percentage to 18%**.
 
-The network can make predictions about what other features to change to achieve the goal. Something similar like:
+The network can make predictions about what other features to change to achieve that goal. Something similar like:
 
 ```
 Predicted weight value for my goal: [[72.58874]]
@@ -30,13 +30,15 @@ Predicted sleep_duration value for my goal: [[510.2371]]
 
 ## How does it work
 
-Let's suppose we have *N* type of health records, and we want to change *m* features by defining a goal. 
+Let's suppose we have *N* type of health records, and we want to change *m* features by defining a goal.
 
-The network creates *N-m* models and uses the latest health record merged with the goal as an input and make *N-m* predictions by the trained models.
+ - The network creates *(N-m)* models for the remaining types
+ - As inputs for the models it uses the latest health record merged with the defined goal
+ - The network makes *(N-m)* predictions for each feature which is not modified by your goal.
 
 ## Usage
 
-A good outline of the project can be the following Jupyter notebook: [notebooks/enhance.ipynb](notebooks/enhance.ipynb) 
+You can go through the project by following Jupyter notebook: [notebooks/enhance.ipynb](notebooks/enhance.ipynb) 
 
 There is also a corresponding `main/main.py` which can be run as a Python script.
 
