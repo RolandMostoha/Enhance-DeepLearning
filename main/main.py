@@ -10,7 +10,6 @@ def main():
     from datetime import date
     import pandas as pd
     import tensorflow as tf
-    import seaborn as seaborn
     from data.dataset_generator import DatasetGenerator
 
     from plotter import plotter
@@ -43,9 +42,6 @@ def main():
     data_frame = pd.read_csv("../data/raw/health_records.csv")
     data_frame = data_frame.fillna(data_frame.mean())
     data_frame = data_frame.drop(columns=['record_date'])
-
-    # Find correlations manually
-    seaborn.pairplot(data_frame[KEYS_ALL_HEALTH_RECORDS], diag_kind='kde')
 
     # Check dataset stats
     print(data_frame.describe().transpose())

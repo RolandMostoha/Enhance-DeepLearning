@@ -8,7 +8,7 @@ It's purpose is my personal entertainment, I consider it as a hobby project wher
 
 To demonstrate the main idea behind the project, let's suppose we have a dataset with the following features:
 
-record_date | weight | fat | calories_out | resting_heart | active_min | inactive_min | sleep | ... |
+record_date | weight | fat | cal_out | rest_heart | active_min | inactive_min | sleep | ... |
 --- | --- | --- | --- | --- | --- | --- | --- |  --- |
 2020-10-10 | 77kg | 22% | 2500 | 65 | 120m | 600m | 8hr | ... |
 2020-10-11 | 76kg | 22% | 3000 | 64 | 0m | 650m | 8hr | ... |
@@ -62,7 +62,7 @@ You'll need a Fitbit developer account to load your health records using the Fit
 
 After the successful authentication, you can use the `FitbitDataProvider` to collect your health records. 
 
-If you want to add more features, you can update the `src/model/records.py` and extend the `FitbitDataProvider` class 
+If you want to add more features, you can update the `src/model/records.py` and extend the `FitbitDataProvider` class. 
 
 ### Custom data provider
 
@@ -70,7 +70,7 @@ You can also use a custom data provider by implementing the `DataProvider` class
 
 ### Random data provider
 
-If you just want to try out the project without any custom data provider, you can use the `RandomDataProvider` class.
+If you just want to try out the project without any custom data provider, you can use `RandomDataProvider`.
 
 ### Custom trainer
 
