@@ -34,10 +34,7 @@ def main():
 
     loader.write_to_csv("../data/raw/health_records.csv")
 
-    # Initial setup
     pd.set_option('display.max_columns', 15)
-    tf.keras.backend.clear_session()
-    tf.random.set_seed(60)
 
     data_frame = pd.read_csv("../data/raw/health_records.csv")
     data_frame = data_frame.fillna(data_frame.mean())
@@ -65,6 +62,9 @@ def main():
         record_keys.remove(key)
 
     prediction_results = 'Results for my goal {}'.format(my_goal_changes)
+
+    tf.keras.backend.clear_session()
+    tf.random.set_seed(60)
 
     for key in record_keys:
         dataset = DatasetGenerator(data_frame, target_feature=key)
