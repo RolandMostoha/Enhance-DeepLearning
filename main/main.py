@@ -64,7 +64,7 @@ def main():
 
     record_keys = KEYS_ALL_HEALTH_RECORDS
 
-    # Skip the modified ones, there is no need to predict overwritten records
+    # Skip the modified keys, there is no need to predict overwritten records
     for key in my_goal_changes.keys():
         record_keys.remove(key)
 
