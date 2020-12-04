@@ -2,7 +2,7 @@
 
 Enhance is Tensorflow based regression project. Its primary goal is to make predictions based on your personal fitness goals using your Fitbit (or a custom provider's) health records.
 
-It's purpose is my personal entertainment, I consider it as a hobby project where I can try what I've learnt in my journey of deep learning.
+Its purpose is my personal entertainment, I consider it as a hobby project where I could try what I've learnt in my journey of deep learning.
 
 ## Main concept
 
@@ -16,7 +16,7 @@ record_date | weight | fat | cal_out | rest_heart | active_min | inactive_min | 
 
 Let's say we want to make a goal by reducing the **fat percentage to 18%**.
 
-The network can make predictions about what other features to change to achieve that goal. Something similar like:
+The network is trained by the records and can make predictions about what other features to change to achieve that goal. Something similar like:
 
 ```
 Predicted weight value for my goal: [[72.58874]]
@@ -49,7 +49,7 @@ The recommended steps to run the project:
 3. Load Fitbit health records via Fitbit Developer API
 4. Process the generated dataset with Pandas
 5. Define your goal
-6. Train the model
+6. Train the models
 7. Evaluate predictions
 
 ### Fitbit integration
@@ -62,7 +62,7 @@ You'll need a Fitbit developer account to load your health records using the Fit
    * Callback URL *: `http://127.0.0.1:8080/`
 3. Set the generated Client ID and Client Secret in `configs/fitbit_auth_config.json`
 
-After the successful authentication, you can use the `FitbitDataProvider` to collect your health records. 
+After the successful authentication, you can use `FitbitDataProvider` to collect your health records. 
 
 If you want to add more features, you can update the `src/model/records.py` and extend the `FitbitDataProvider` class. 
 
@@ -72,7 +72,7 @@ You can also use a custom data provider by implementing the `DataProvider` class
 
 ### Random data provider
 
-If you just want to try out the project without any custom data provider, you can use `RandomDataProvider`.
+If you just want to try out the project without Fitbit account or without creating a custom data provider, you can use `RandomDataProvider`.
 
 ### Custom trainer
 
